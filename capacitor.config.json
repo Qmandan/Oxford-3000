@@ -1,0 +1,6 @@
+{
+  "appId": "com.cumleatolyesi.app",
+  "appName": "Cümle Atölyesi",
+  "webDir": "www",
+  "android": { "allowMixedContent": false }
+}
