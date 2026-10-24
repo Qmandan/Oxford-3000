@@ -128,9 +128,98 @@ const LC=Object.fromEntries(Object.entries(D.rf).map(([k,v])=>[k,v.color]));LC.C
 const cnt=s=>({dersler:L().length,kelimeler:W().length,phrasal:P().length,ceviri:T().length,pratik:'∞'})[s];
 const dueN=()=>{const t=day();return [...W().map(wk),...P().map(pk)].filter(k=>S.srs[k]&&S.srs[k].d<=t).length};
 const prog=s=>({dersler:`${doneN()}/${L().length}`,kelimeler:`${W().filter(x=>known(wk(x))).length}/${W().length}`,phrasal:`${P().filter(x=>known(pk(x))).length}/${P().length}`,ceviri:`${Object.keys(S.td).length}/${T().length}`,pratik:'',ana:''})[s];
+const IRR=`be|was/were|been|olmak
+have|had|had|sahip olmak
+do|did|done|yapmak
+say|said|said|söylemek
+go|went|gone|gitmek
+get|got|got|almak, olmak
+make|made|made|yapmak, üretmek
+know|knew|known|bilmek
+think|thought|thought|düşünmek
+take|took|taken|almak, götürmek
+see|saw|seen|görmek
+come|came|come|gelmek
+give|gave|given|vermek
+find|found|found|bulmak
+tell|told|told|anlatmak, söylemek
+feel|felt|felt|hissetmek
+leave|left|left|ayrılmak, bırakmak
+put|put|put|koymak
+mean|meant|meant|demek istemek
+keep|kept|kept|tutmak, sürdürmek
+let|let|let|izin vermek
+begin|began|begun|başlamak
+show|showed|shown|göstermek
+hear|heard|heard|duymak
+run|ran|run|koşmak
+bring|brought|brought|getirmek
+buy|bought|bought|satın almak
+eat|ate|eaten|yemek
+drink|drank|drunk|içmek
+write|wrote|written|yazmak
+read|read|read|okumak (okunuşu değişir)
+speak|spoke|spoken|konuşmak
+sit|sat|sat|oturmak
+stand|stood|stood|ayakta durmak
+lose|lost|lost|kaybetmek
+pay|paid|paid|ödemek
+meet|met|met|tanışmak, buluşmak
+send|sent|sent|göndermek
+build|built|built|inşa etmek
+fall|fell|fallen|düşmek
+sell|sold|sold|satmak
+win|won|won|kazanmak
+sleep|slept|slept|uyumak
+wake|woke|woken|uyanmak
+wear|wore|worn|giymek
+drive|drove|driven|araba sürmek
+ride|rode|ridden|binmek
+fly|flew|flown|uçmak
+swim|swam|swum|yüzmek
+sing|sang|sung|şarkı söylemek
+choose|chose|chosen|seçmek
+forget|forgot|forgotten|unutmak
+understand|understood|understood|anlamak
+teach|taught|taught|öğretmek
+catch|caught|caught|yakalamak
+cost|cost|cost|paraya mal olmak
+cut|cut|cut|kesmek
+hurt|hurt|hurt|acıtmak
+hit|hit|hit|vurmak
+set|set|set|ayarlamak
+shut|shut|shut|kapatmak
+spend|spent|spent|harcamak
+lend|lent|lent|ödünç vermek
+break|broke|broken|kırmak
+steal|stole|stolen|çalmak
+throw|threw|thrown|atmak
+grow|grew|grown|büyümek
+draw|drew|drawn|çizmek
+hold|held|held|tutmak
+hang|hung|hung|asmak
+hide|hid|hidden|saklanmak
+bite|bit|bitten|ısırmak
+become|became|become|olmak
+beat|beat|beaten|yenmek
+blow|blew|blown|üflemek
+burn|burnt|burnt|yanmak
+feed|fed|fed|beslemek
+fight|fought|fought|kavga etmek
+forgive|forgave|forgiven|affetmek
+freeze|froze|frozen|donmak
+lead|led|led|yol göstermek
+ring|rang|rung|çalmak (zil)
+rise|rose|risen|yükselmek
+shake|shook|shaken|sallamak
+shoot|shot|shot|ateş etmek
+sink|sank|sunk|batmak
+tear|tore|torn|yırtmak`.split('\n').map(x=>x.split('|'));
+function irrFill(){const q=$('#iq').value.trim().toLocaleLowerCase('tr');$('#ilist').innerHTML=IRR.filter(r=>!q||r.some(s=>s.toLocaleLowerCase('tr').includes(q))).map(r=>`<div class="box row wrap" style="margin-bottom:6px;gap:6px 12px"><b style="min-width:76px">${esc(r[0])}</b><span style="min-width:96px">${esc(r[1])}</span><span style="min-width:76px">${esc(r[2])}</span><span class="cnt">${esc(r[3])}</span><button class="btn sm sp" data-act="say" data-t="${esc(r[0]+', '+r[1].split('/')[0]+', '+r[2])}" data-r="0.8" aria-label="Dinle">🔊</button></div>`).join('')||'<p class="cnt">Sonuç yok.</p>'}
+function irrModal(){modal('Düzensiz fiiller',`<p style="margin:0 0 10px;color:var(--ink2)">Geçmişte olan bir şeyi anlatırken <b>2. sütunu</b> kullan (I <b>went</b> home). <b>have / has</b> ile kuruyorsan <b>3. sütunu</b> kullan (I have <b>gone</b>). Düzenli fiillerde ikisi de sonuna -ed alır; bunlar kuralı bozan en sık fiiller.</p><input type="search" id="iq" placeholder="Fiil ya da Türkçe anlam ara…" aria-label="Ara"><div class="row wrap cnt" style="margin:10px 0 6px;gap:6px 12px"><b style="min-width:76px">Şimdi</b><b style="min-width:96px">Geçmiş</b><b style="min-width:76px">have + …</b><b>Türkçe</b></div><div id="ilist"></div>`,'lg');irrFill()}
 function go(s){S.sec=s;save();render();scrollTo(0,0)}
 function render(){document.documentElement.dataset.theme=S.theme;document.documentElement.dataset.sec=S.sec;const s=SEC.find(x=>x[0]===S.sec);
-$('#nav').innerHTML=SEC.map(x=>`<button class="btn ${x[0]===S.sec?'on':''}" style="--a:${x[3]}" data-act="go" data-s="${x[0]}" ${x[0]===S.sec?'aria-current="page"':''}>${x[2]} ${x[1]}${prog(x[0])?` <small>${prog(x[0])}</small>`:''}</button>`).join('');$('#nav .on')?.scrollIntoView({inline:'center',block:'nearest'});$('#sub').textContent=`${L().length} ders • ${W().length} kelime • ${P().length} phrasal • ${T().length} çeviri${S.streak>1?' • 🔥 '+S.streak+' gün':''}`;
+$('#nav').innerHTML=SEC.map(x=>`<button class="btn ${x[0]===S.sec?'on':''}" style="--a:${x[3]}" data-act="go" data-s="${x[0]}" ${x[0]===S.sec?'aria-current="page"':''}>${x[2]} ${x[1]}${prog(x[0])?` <small>${prog(x[0])}</small>`:''}</button>`).join('')+`<button class="btn" style="--a:#6c5ce7" data-act="irr">📖 Düzensiz fiiller</button>`;$('#nav .on')?.scrollIntoView({inline:'center',block:'nearest'});$('#sub').textContent=`${L().length} ders • ${W().length} kelime • ${P().length} phrasal • ${T().length} çeviri${S.streak>1?' • 🔥 '+S.streak+' gün':''}`;
 $('#main').innerHTML=V[S.sec]();(Z[S.sec]||(()=>{}))()}
 const searchBar=(t,key,dd,extra='')=>`<div class="bar"><h2>${t}</h2><input type="search" id="q" placeholder="Ara…  ( / )" value="${esc(Q[key]||'')}" aria-label="Ara">${dd}<span class="cnt" id="cnt">${extra}</span></div><div class="grid" id="list"></div><div id="more" style="text-align:center;margin-top:14px"></div>`;
 const DESC={dersler:'İngilizce bilmiyorsan baştan başla: dersler adım adım ilerler. Kendi derslerini de ekleyebilirsin.',kelimeler:'En sık kullanılan 1000 kelime, anlam ve örneklerle.',phrasal:'Günlük konuşmanın vazgeçilmez fiilleri.',ceviri:'365 cümleyle yazarak çeviri çalış.',pratik:'Kartlarla ve aralıklı tekrarla kalıcı öğren.'};
@@ -154,7 +243,7 @@ h+=`<div class="lv"><div class="row wrap"><h2>${lv==='C'?'':'Bölüm '+(Object.k
 $('#list').innerHTML=h}
 const sayBtns=t=>`<button class="btn sm" data-act="say" data-t="${esc(t)}" data-r="0.7">🐢</button><button class="btn sm" data-act="say" data-t="${esc(t)}" data-r="1">▶</button><button class="btn sm" data-act="say" data-t="${esc(t)}" data-r="1.3">⚡</button>`;
 function lesson(id){id=+id;const ls=L(),k=ls.findIndex(x=>x.id===id);if(k<0)return;const l=ls[k],pv=ls[k-1],nx=ls[k+1];modal(`${lbl(l)} • ${l.title}`,`
-<div class="row wrap"><span class="tag">${RF()[l.level]?.ic||''}</span>${l.pattern?`<span class="tag">${esc(l.pattern)}</span>`:''}${S.le[id]?'<span class="tag">✎ düzenlendi</span>':''}<button class="btn sm sp" data-act="ledit" data-i="${id}">✏️ Düzenle</button></div>
+<div class="row wrap"><span class="tag">${RF()[l.level]?.ic||''}</span>${l.pattern?`<span class="tag">${esc(l.pattern)}</span>`:''}${S.le[id]?'<span class="tag">✎ düzenlendi</span>':''}${l.level==='S7'?'<button class="btn sm sp" data-act="irr">📖 Düzensiz fiiller</button>':''}<button class="btn sm ${l.level==='S7'?'':'sp'}" data-act="ledit" data-i="${id}">✏️ Düzenle</button></div>
 <div class="box say" style="margin-top:12px">${l.want?`<b class="k">Türkçede şunu demek istiyorsan</b><div>${esc(l.want)}</div>`:''}<b class="k" style="margin-top:${l.want?12:0}px">İngilizcede şöyle söyle</b><div class="fr" style="font-size:20px;font-weight:600">${esc(l.say)}</div></div>
 ${l.steps?.length?`<div class="sec"><b>Nasıl kurarsın?</b><ol class="st">${l.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>`:''}
 ${l.why?`<div class="sec box"><b>Neden böyle? Hangisini seçmeliyim?</b><div>${esc(l.why)}</div></div>`:''}
@@ -246,12 +335,12 @@ const kw=w.filter(x=>known(wk(x))).length,kp=p.filter(x=>known(pk(x))).length,kt
 modal('İlerleme',`<div class="stats"><div class="stat"><b>🔥 ${S.streak}</b><span>gün seri</span></div><div class="stat"><b>${due}</b><span>bugün tekrar</span></div><div class="stat"><b>${Object.keys(S.fav).length}</b><span>favori</span></div></div>
 ${[['Dersler',kl,L().length],['Kelimeler',kw,w.length],['Phrasal',kp,p.length],['Çeviri',kt,T().length]].map(([n,a,b])=>`<div class="sec"><div class="row"><b style="margin:0">${n}</b><span class="sp">${a} / ${b}</span></div>${pc(a,b)}</div>`).join('')}`)}
 function keys(){modal('Klavye kısayolları',`<div class="grid" style="grid-template-columns:1fr"><div><kbd>/</kbd> Aramaya git</div><div><kbd>Esc</kbd> Pencereyi kapat</div><div><kbd>Enter</kbd> Cevabı kontrol et</div><div><kbd>Boşluk</kbd> Kartı çevir (Pratik)</div><div><kbd>1</kbd> / <kbd>2</kbd> Bilmedim / Bildim (Pratik)</div><div><kbd>←</kbd> <kbd>→</kbd> Önceki / sonraki cümle (Çeviri)</div></div>`)}
-function tools(a){menu(a,[{l:'Bugünün tekrarı',ic:'🔁',s:String(dueN()),id:'due'},{l:'Kaldığın dersten devam et',ic:'▶',id:'cont'},'-',{l:'Kendi içeriğimi ekle',ic:'➕',id:'add'},{l:'Yeni ders yaz',ic:'📝',id:'newl'},{l:'İlerleme',ic:'📊',id:'stats'},'-',{l:'Tema: '+({light:'Açık',dark:'Koyu'})[S.theme],ic:'🌓',id:'theme'},{l:'Yedek indir (JSON)',ic:'⬇',id:'bk'},{l:'Yedek yükle',ic:'⬆',id:'rs'},'-',{l:'Klavye kısayolları',ic:'⌨',id:'keys'},{l:'İlerlemeyi sıfırla',ic:'🗑',id:'reset'}],o=>{
-({due:()=>{S.f.deck='words';PS.q=null;go('pratik');if(dueN())startP()},cont:()=>{go('dersler');lesson((L().find(l=>!S.ld[l.id])||L()[0]).id)},add:()=>addModal(),newl:()=>{go('dersler');lessonEdit()},stats,keys,theme:()=>{S.theme={light:'dark',dark:'light'}[S.theme];save();render()},bk:()=>dl('ingilizce-yedek.json',JSON.stringify(S),'application/json'),rs:()=>{const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=async()=>{try{S=Object.assign({},structuredClone(def),JSON.parse((await i.files[0].text()).replace(/^\ufeff/,'')));S.c={...def.c,...S.c};S.f={...def.f,...S.f};save();render();toast('Yedek yüklendi')}catch{toast('Geçersiz yedek dosyası')}};i.click()},
+function tools(a){menu(a,[{l:'Bugünün tekrarı',ic:'🔁',s:String(dueN()),id:'due'},{l:'Kaldığın dersten devam et',ic:'▶',id:'cont'},'-',{l:'Kendi içeriğimi ekle',ic:'➕',id:'add'},{l:'Yeni ders yaz',ic:'📝',id:'newl'},{l:'Düzensiz fiiller',ic:'📖',id:'irr'},{l:'İlerleme',ic:'📊',id:'stats'},'-',{l:'Tema: '+({light:'Açık',dark:'Koyu'})[S.theme],ic:'🌓',id:'theme'},{l:'Yedek indir (JSON)',ic:'⬇',id:'bk'},{l:'Yedek yükle',ic:'⬆',id:'rs'},'-',{l:'Klavye kısayolları',ic:'⌨',id:'keys'},{l:'İlerlemeyi sıfırla',ic:'🗑',id:'reset'}],o=>{
+({due:()=>{S.f.deck='words';PS.q=null;go('pratik');if(dueN())startP()},cont:()=>{go('dersler');lesson((L().find(l=>!S.ld[l.id])||L()[0]).id)},add:()=>addModal(),newl:()=>{go('dersler');lessonEdit()},irr:irrModal,stats,keys,theme:()=>{S.theme={light:'dark',dark:'light'}[S.theme];save();render()},bk:()=>dl('ingilizce-yedek.json',JSON.stringify(S),'application/json'),rs:()=>{const i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=async()=>{try{S=Object.assign({},structuredClone(def),JSON.parse((await i.files[0].text()).replace(/^\ufeff/,'')));S.c={...def.c,...S.c};S.f={...def.f,...S.f};save();render();toast('Yedek yüklendi')}catch{toast('Geçersiz yedek dosyası')}};i.click()},
 reset:()=>{if(confirm('Tüm ilerleme ve eklediklerin silinecek. Emin misin?')){S=Object.assign({},structuredClone(def),{theme:S.theme});save();render()}}})[o.id]()})}
 /* ---------- Olaylar ---------- */
 const A={
-close:closeModal,
+irr:irrModal,close:closeModal,
 go:t=>go(t.dataset.s),duego:()=>{S.f.deck='words';PS.q=null;go('pratik');startP()},toolmenu:tools,add:()=>S.sec==='dersler'?lessonEdit():addModal(),
 dd:t=>{const k=t.dataset.k,o=DD[k].o();menu(t,o.map(([v,l])=>({l,on:v===S.f[k],id:v})),it=>{S.f[k]=it.id;LIM=60;TS.i=0;TS.rnd=null;TS.ans='';TS.st='idle';if(k==='deck'||k==='size'){PS.q=null}save();render()})},
 lesson:t=>lesson(t.dataset.i),ldone:t=>{const i=t.dataset.i;S.ld[i]?delete S.ld[i]:S.ld[i]=1;save();t.textContent=S.ld[i]?'✓ Tamamlandı (geri al)':'Dersi tamamladım';render();toast(S.ld[i]?'Ders tamamlandı ✓':'Geri alındı')},lnav:t=>{closeModal();lesson(t.dataset.i);$('.wb').scrollTop=0},
@@ -276,7 +365,7 @@ addtab:t=>{closeModal();addModal(t.dataset.k)},
 addone:t=>{const k=t.dataset.k,F=FORMS[k],v=F.f.map(([,id])=>$('#f_'+id).value.trim());if(!v[0]||(k!=='p'&&!v[1]))return toast('* işaretli alanlar gerekli');S.c[k].push(mk(k,v));save();toast('Eklendi ✓');closeModal();render()},
 csvout:t=>{const k=t.dataset.k,a=S.c[k];dl(({w:'kelimelerim',p:'phrasal',t:'cumlelerim'})[k]+'.csv',k==='w'?toCsv(['Kelime','Anlam','Tür','Örnek'],a.map(x=>[x.word,x.meaning,x.type,x.examples])):k==='p'?toCsv(['Phrasal','Anlam','Örnek'],a.map(x=>[x.verb,x.meaning,x.example])):toCsv(['Türkçe','İngilizce'],a.map(x=>[x.tr,x.en])))}};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t)A[t.dataset.act]?.(t)});
-let dbt;document.addEventListener('input',e=>{if(e.target.id!=='q')return;const k=S.sec==='kelimeler'?'w':'p';Q[k]=e.target.value;LIM=60;clearTimeout(dbt);dbt=setTimeout(()=>k==='w'?fillW():fillP(),150)});
+let dbt;document.addEventListener('input',e=>{if(e.target.id==='iq')return irrFill();if(e.target.id!=='q')return;const k=S.sec==='kelimeler'?'w':'p';Q[k]=e.target.value;LIM=60;clearTimeout(dbt);dbt=setTimeout(()=>k==='w'?fillW():fillP(),150)});
 document.addEventListener('keydown',e=>{const tag=document.activeElement?.tagName,typing=tag==='INPUT'||tag==='TEXTAREA';
 if(e.key==='Escape'){if(document.querySelector('.pop')){closePop()}else if(mods.length)closeModal();return}
 if(typing||e.ctrlKey||e.metaKey||mods.length)return;
